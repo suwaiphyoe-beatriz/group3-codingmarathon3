@@ -26,6 +26,10 @@ const createJob = async (req, res) => {
     res.status(201).json(newJob);
   } catch (error) {
     console.error("Error creating job:", error);
+    // If it's a Mongoose validation error, return 400 so tests and clients can handle it
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message });
+    }
     res.status(500).json({ error: "Server Error" });
   }
 };
@@ -34,7 +38,8 @@ const createJob = async (req, res) => {
 const getJobById = async (req, res) => {
   const { jobId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(jobId)) {
-    return res.status(404).json({ error: "No such job" });
+    // invalid id format -> bad request
+    return res.status(400).json({ error: "Invalid job id" });
   }
 
   try {
@@ -54,7 +59,8 @@ const getJobById = async (req, res) => {
 const updateJob = async (req, res) => {
   const { jobId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(jobId)) {
-    return res.status(404).json({ error: "No such job" });
+    // invalid id format -> bad request
+    return res.status(400).json({ error: "Invalid job id" });
   }
 
   try {
@@ -78,7 +84,8 @@ const updateJob = async (req, res) => {
 const deleteJob = async (req, res) => {
   const { jobId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(jobId)) {
-    return res.status(404).json({ error: "No such job" });
+    // invalid id format -> bad request
+    return res.status(400).json({ error: "Invalid job id" });
   }
 
   try {
