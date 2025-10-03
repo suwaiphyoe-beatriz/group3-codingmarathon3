@@ -8,8 +8,13 @@ const AddJobPage = () => {
   const [companyName, setCompanyName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [website, setWebsite] = useState("");
+  const [companySize, setCompanySize] = useState("");
   const [location, setLocation] = useState("");
   const [salary, setSalary] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("Entry");
+  const [applicationDeadline, setApplicationDeadline] = useState("");
+  const [requirements, setRequirements] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user ? user.token : null;
@@ -48,9 +53,16 @@ const AddJobPage = () => {
         name: companyName,
         contactEmail,
         contactPhone,
+        website,
+        size: companySize ? Number(companySize) : undefined,
       },
       location,
       salary: Number(salary),
+      experienceLevel,
+      applicationDeadline: applicationDeadline || undefined,
+      requirements: requirements
+        ? requirements.split(",").map((req) => req.trim()).filter(Boolean)
+        : [],
     };
 
     const success = await addJob(newJob);
@@ -108,6 +120,19 @@ const AddJobPage = () => {
           value={contactPhone}
           onChange={(e) => setContactPhone(e.target.value)}
         />
+        <label>Company Website:</label>
+        <input
+          type="url"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+
+        <label>Company Size (number of employees):</label>
+        <input
+          type="number"
+          value={companySize}
+          onChange={(e) => setCompanySize(e.target.value)}
+        />
         <label>Location:</label>
         <input
           type="text"
@@ -122,6 +147,30 @@ const AddJobPage = () => {
           required
           value={salary}
           onChange={(e) => setSalary(e.target.value)}
+        />
+
+        <label>Experience Level:</label>
+        <select
+          value={experienceLevel}
+          onChange={(e) => setExperienceLevel(e.target.value)}
+        >
+          <option value="Entry">Entry</option>
+          <option value="Mid">Mid</option>
+          <option value="Senior">Senior</option>
+        </select>
+
+        <label>Application Deadline:</label>
+        <input
+          type="date"
+          value={applicationDeadline}
+          onChange={(e) => setApplicationDeadline(e.target.value)}
+        />
+
+        <label>Requirements (comma separated):</label>
+        <input
+          type="text"
+          value={requirements}
+          onChange={(e) => setRequirements(e.target.value)}
         />
         <button type="submit">Add Job</button>
       </form>
