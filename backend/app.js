@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const jobRouter = require("./routes/jobRouter");
 const userRouter = require("./routes/userRouter");
-const { unknownEndpoint,errorHandler } = require("./middleware/customMiddleware");
+const { unknownEndpoint, errorHandler } = require("./middleware/customMiddleware");
 const connectDB = require("./config/db");
 const cors = require("cors");
 
@@ -17,8 +17,14 @@ connectDB();
 app.use("/api/jobs", jobRouter);
 app.use("/api/users", userRouter);
 
-app.use(unknownEndpoint);
+app.use(express.static('view'));  // Serve frontend static files
+
+app.use('/api', unknownEndpoint);
 app.use(errorHandler);
+
+app.use((req, res) => {
+  res.sendFile(__dirname + '/view/index.html');
+});
 
 module.exports = app;
 
